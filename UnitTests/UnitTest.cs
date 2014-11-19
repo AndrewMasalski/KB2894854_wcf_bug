@@ -10,21 +10,23 @@ namespace UnitTests
         private const string ServiceUrl = "http://localhost:1111/sample.svc/Foos";
 
         [TestMethod]
-        public void TestGetAll()
+        public void TestGetById()
         {
             using (var client = new WebClient())
             {
                 client.Headers.Add("Accept", "application/json");
-                var resp = client.DownloadString(ServiceUrl);
+                const string id = "foo1";
+                var getOneAddress = string.Format("{0}('{1}')", ServiceUrl, id);
+                var resp = client.DownloadString(getOneAddress);
                 dynamic result = Json.Decode(resp);
-                var foos = result.d as DynamicJsonArray;
-                Assert.IsNotNull(foos);
-                Assert.IsTrue(foos.Length == 2);
+                Assert.IsNotNull(result);
+                Assert.IsNotNull(result.d);
+                Assert.IsTrue(result.d.id == "foo1");
             }
         }
 
         [TestMethod]
-        public void TestGetById()
+        public void TestGetByDoubleEncodedId()
         {
             using (var client = new WebClient())
             {
